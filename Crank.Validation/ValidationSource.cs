@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Crank.Validation
 {
@@ -81,8 +82,8 @@ namespace Crank.Validation
             return this;
         }
 
-        public ValidationSource<TSource> ApplyRule<TValidationRule, TComparison>(TComparison comparisonValue)
-            where TValidationRule : IValidationRule<TSource, TComparison>
+        public ValidationSource<TSource> ApplyRule<TValidationRule, TInputValue>(TInputValue inputValue)
+            where TValidationRule : IValidationRule<TSource, TInputValue>
         {
             if (!_validation.TryGetRule<TValidationRule>(out var validationRule))
             {
@@ -90,14 +91,14 @@ namespace Crank.Validation
                 return this;
             }
 
-            var result = validationRule.ApplyTo(Source, comparisonValue);
+            var result = validationRule.ApplyTo(Source, inputValue);
             _results.Add(typeof(TValidationRule), result);
 
             return this;
         }
 
-        public ValidationSource<TSource> ApplyRule<TValidationRule, TComparison>(TComparison comparisonValue, out IValidationResult validationResult)
-            where TValidationRule : IValidationRule<TSource, TComparison>
+        public ValidationSource<TSource> ApplyRule<TValidationRule, TInputValue>(TInputValue inputValue, out IValidationResult validationResult)
+            where TValidationRule : IValidationRule<TSource, TInputValue>
         {
             if (!_validation.TryGetRule<TValidationRule>(out var validationRule))
             {
@@ -106,7 +107,7 @@ namespace Crank.Validation
                 return this;
             }
 
-            validationResult = validationRule.ApplyTo(Source, comparisonValue);
+            validationResult = validationRule.ApplyTo(Source, inputValue);
             _results.Add(typeof(TValidationRule), validationResult);
 
             return this;
@@ -141,6 +142,54 @@ namespace Crank.Validation
 
             var result = validationRule.ApplyTo(Source, out outValue, out additionalOutValue);
             _results.Add(typeof(TValidationRule), result);
+            return this;
+        }
+
+        public async Task<ValidationSource<TSource>> ApplyRuleAsync<TValidationRuleAsync>()
+           where TValidationRuleAsync : IValidationRuleAsync<TSource>
+
+        {
+            if (!_validation.TryGetRule<TValidationRuleAsync>(out var validationRule))
+            {
+                _results.Add(typeof(TValidationRuleAsync), new ValidationResult(false, "Rule not found"));
+                return this;
+            }
+
+            var result = await validationRule.ApplyTo(Source);
+            _results.Add(typeof(TValidationRuleAsync), result);
+
+            return this;
+        }
+
+        public async Task<ValidationSource<TSource>> ApplyRuleAsync<TValidationRuleAsync, TInputValue>(TInputValue inputValue)
+                 where TValidationRuleAsync : IValidationRuleAsync<TSource, TInputValue>
+
+        {
+            if (!_validation.TryGetRule<TValidationRuleAsync>(out var validationRule))
+            {
+                _results.Add(typeof(TValidationRuleAsync), new ValidationResult(false, "Rule not found"));
+                return this;
+            }
+
+            var result = await validationRule.ApplyTo(Source, inputValue);
+            _results.Add(typeof(TValidationRuleAsync), result);
+
+            return this;
+        }
+
+        public async Task<ValidationSource<TSource>> ApplyRuleAsync<TValidationRuleAsync, TInputValue, TAdditionalInputValue>(TInputValue inputValue, TAdditionalInputValue additionalValue)
+                         where TValidationRuleAsync : IValidationRuleAsync<TSource, TInputValue, TAdditionalInputValue>
+
+        {
+            if (!_validation.TryGetRule<TValidationRuleAsync>(out var validationRule))
+            {
+                _results.Add(typeof(TValidationRuleAsync), new ValidationResult(false, "Rule not found"));
+                return this;
+            }
+
+            var result = await validationRule.ApplyTo(Source, inputValue, additionalValue);
+            _results.Add(typeof(TValidationRuleAsync), result);
+
             return this;
         }
     }
