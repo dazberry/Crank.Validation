@@ -55,5 +55,27 @@ namespace Crank.Validation.Tests.Validations
             Assert.Equal(passing, string.IsNullOrEmpty(validationResult.ErrorMessage));
         }
 
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void WhenSettingAValue_TheValueShouldAttachToTheResult(bool passing)
+        {
+            //given
+            var anIntValue = 6;
+            var aStringValue = "Six";
+
+            //when
+            var validationResult = ValidationResult.Set(passing)
+                .WithValue(anIntValue)
+                .WithValue(aStringValue);
+
+            //then
+            Assert.Equal(passing, validationResult.Passed);
+            Assert.True(validationResult.TryGetValue<int>(out var storedIntValue));
+            Assert.Equal(anIntValue, storedIntValue);
+            Assert.True(validationResult.TryGetValue<string>(out var storedStringValue));
+            Assert.Equal(aStringValue, storedStringValue);
+        }
+
     }
 }
