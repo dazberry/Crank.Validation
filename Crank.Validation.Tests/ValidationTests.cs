@@ -8,7 +8,7 @@ namespace Crank.Validation.Tests
 {
     public class ValidationTests
     {
-        private static Validation CreateValidation()
+        private static Validation CreateValidation(ValidationOptions validationOptions = null)
         {
             var validation = new Validation(
                 new IValidationRule[]
@@ -19,7 +19,8 @@ namespace Crank.Validation.Tests
                     new ARuleThatFailsWithAnErrorMessageAsync(),
                     new ARuleThatComparesSourceAgainstAnInputValue(),
                     new ARuleThatUpdatesAnInputValue(),
-                });
+                },
+                validationOptions);
             return validation;
         }
 
@@ -329,6 +330,27 @@ namespace Crank.Validation.Tests
             Assert.Equal(source.AStringValue, inputValue.AStringValue);
             Assert.True(validationSource.TryGetValue(out SourceModel inputValue2));
             Assert.Equal(inputValue, inputValue2);
+        }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void IfStopApplyingRulesAfterFailedIsSet_AndARuleFails_NoAdditionalRulesShouldBeCalled(bool flagValue)
+        {
+            //given
+            var validation = CreateValidation(new ValidationOptions() { StopApplyingRulesAfterFailed = flagValue });
+            var sourceModel = new SourceModel();
+            var expectedText = flagValue ? "Rule not applied - due to previous failing validations" : string.Empty;
+
+            //when
+            validation.For(sourceModel)
+                .ApplyRule<ARuleThatFailsWithAnErrorMessage>(out IValidationResult failingRuleResult)
+                .ApplyRule<ARuleThatPassesAndReturnsAStringValue>(out IValidationResult passingRuleResult);
+
+            //then
+            Assert.False(failingRuleResult.Passed);
+            Assert.Equal(!flagValue, passingRuleResult.Passed);
+            Assert.Equal(expectedText, passingRuleResult.ErrorMessage);
         }
 
 

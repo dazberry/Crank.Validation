@@ -5,14 +5,17 @@ namespace Crank.Validation
 {
     public class Validation
     {
-        private IEnumerable<IValidationRule> _validationRules;
-        public Validation(IEnumerable<IValidationRule> validationRules)
+        private readonly IEnumerable<IValidationRule> _validationRules;
+        private readonly ValidationOptions _validationOptions;
+
+        public Validation(IEnumerable<IValidationRule> validationRules, ValidationOptions validationOptions = null)
         {
             _validationRules = validationRules;
+            _validationOptions = validationOptions ?? new ValidationOptions();
         }
 
         public ValidationSource<TSource> For<TSource>(TSource source) =>
-            new ValidationSource<TSource>(this, source);
+            new ValidationSource<TSource>(this, source, _validationOptions);
 
         public bool TryGetRule<TValidationRule>(out TValidationRule validationRule)
             where TValidationRule : IValidationRule
