@@ -7,6 +7,8 @@ namespace Crank.Validation
 {
     public class ValidationSource<TSource>
     {
+        public const string RuleNotFound = "Rule not found";
+
         public TSource Source { get; private set; }
         private readonly Validation _validation;
 
@@ -55,7 +57,7 @@ namespace Crank.Validation
         {
             if (!_validation.TryGetRule<TValidationRule>(out var validationRule))
             {
-                _results.Add(typeof(TValidationRule), new ValidationResult(false, "Rule not found"));
+                _results.Add(typeof(TValidationRule), new ValidationResult(false, RuleNotFound));
                 return this;
             }
 
@@ -72,7 +74,7 @@ namespace Crank.Validation
             if (!_validation.TryGetRule<TValidationRule>(out var validationRule))
             {
                 validationResult = default;
-                _results.Add(typeof(TValidationRule), new ValidationResult(false, "Rule not found"));
+                _results.Add(typeof(TValidationRule), new ValidationResult(false, RuleNotFound));
                 return this;
             }
 
@@ -87,7 +89,7 @@ namespace Crank.Validation
         {
             if (!_validation.TryGetRule<TValidationRule>(out var validationRule))
             {
-                _results.Add(typeof(TValidationRule), new ValidationResult(false, "Rule not found"));
+                _results.Add(typeof(TValidationRule), new ValidationResult(false, RuleNotFound));
                 return this;
             }
 
@@ -103,7 +105,7 @@ namespace Crank.Validation
             if (!_validation.TryGetRule<TValidationRule>(out var validationRule))
             {
                 validationResult = default!;
-                _results.Add(typeof(TValidationRule), new ValidationResult(false, "Rule not found"));
+                _results.Add(typeof(TValidationRule), new ValidationResult(false, RuleNotFound));
                 return this;
             }
 
@@ -120,7 +122,7 @@ namespace Crank.Validation
             if (!_validation.TryGetRule<TValidationRule>(out var validationRule))
             {
                 outValue = default!;
-                _results.Add(typeof(TValidationRule), new ValidationResult(false, "Rule not found"));
+                _results.Add(typeof(TValidationRule), new ValidationResult(false, RuleNotFound));
                 return this;
             }
 
@@ -136,7 +138,7 @@ namespace Crank.Validation
             {
                 outValue = default!;
                 additionalOutValue = default!;
-                _results.Add(typeof(TValidationRule), new ValidationResult(false, "Rule not found"));
+                _results.Add(typeof(TValidationRule), new ValidationResult(false, RuleNotFound));
                 return this;
             }
 
@@ -151,7 +153,7 @@ namespace Crank.Validation
         {
             if (!_validation.TryGetRule<TValidationRuleAsync>(out var validationRule))
             {
-                _results.Add(typeof(TValidationRuleAsync), new ValidationResult(false, "Rule not found"));
+                _results.Add(typeof(TValidationRuleAsync), new ValidationResult(false, RuleNotFound));
                 return this;
             }
 
@@ -167,7 +169,7 @@ namespace Crank.Validation
         {
             if (!_validation.TryGetRule<TValidationRuleAsync>(out var validationRule))
             {
-                _results.Add(typeof(TValidationRuleAsync), new ValidationResult(false, "Rule not found"));
+                _results.Add(typeof(TValidationRuleAsync), new ValidationResult(false, RuleNotFound));
                 return this;
             }
 
@@ -183,7 +185,7 @@ namespace Crank.Validation
         {
             if (!_validation.TryGetRule<TValidationRuleAsync>(out var validationRule))
             {
-                _results.Add(typeof(TValidationRuleAsync), new ValidationResult(false, "Rule not found"));
+                _results.Add(typeof(TValidationRuleAsync), new ValidationResult(false, RuleNotFound));
                 return this;
             }
 
