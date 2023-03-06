@@ -83,7 +83,7 @@ Multiple Rule validation
 
 Validation.For(...) returns a **ValidationSource**. Each call to the various ApplyRule methods continue returning ValidationSource values. Passing then returns a boolean value.
 
-## Getting the result of Applying Rules from ValidationSource
+## Getting the result of Applied Rules from a ValidationSource
 |Method|Returns  |
 |--|--|
 |Passing  | All rules passing return true  |
