@@ -7,6 +7,7 @@
     <Product>Darren Davis</Product>
     <PackageProjectUrl>https://github.com/dazberry/Crank.Validation</PackageProjectUrl>
     <Description>Crank.Validation; in a similar vein to Crank.Mapper, is a set of classes designed to allow validation symantics against a specific source object. As with Crank.Mapper, the actually validations need to be written manually.</Description>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
 </Project>
