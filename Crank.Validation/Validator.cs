@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Crank.Validation
@@ -14,8 +15,21 @@ namespace Crank.Validation
             _validationOptions = validationOptions ?? new ValidationOptions();
         }
 
+        public ValidationSource<TSource> For<TSource>(TSource source, ValidationOptions validationOptions = default) =>
+            new ValidationSource<TSource>(this, source, validationOptions ?? _validationOptions);
+
+        public ValidationSource<TSource> For<TSource>(TSource source, Action<ValidationOptions> optionsAction = null)
+        {
+            var validationOptions = new ValidationOptions
+            {
+                StopApplyingRulesAfterFailure = _validationOptions.StopApplyingRulesAfterFailure
+            };
+            optionsAction?.Invoke(validationOptions);
+            return new ValidationSource<TSource>(this, source, validationOptions);
+        }
+
         public ValidationSource<TSource> For<TSource>(TSource source) =>
-            new ValidationSource<TSource>(this, source, _validationOptions);
+                    new ValidationSource<TSource>(this, source, _validationOptions);
 
         public bool TryGetRule<TValidationRule>(out TValidationRule validationRule)
             where TValidationRule : IValidationRule

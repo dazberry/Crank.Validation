@@ -335,15 +335,36 @@ namespace Crank.Validation.Tests
         [Theory]
         [InlineData(true)]
         [InlineData(false)]
-        public void IfStopApplyingRulesAfterFailedIsSet_AndARuleFails_NoAdditionalRulesShouldBeCalled(bool flagValue)
+        public void IfStopApplyingRulesAfterFailure_AndARuleFails_NoAdditionalRulesShouldBeCalled(bool flagValue)
         {
             //given
-            var validation = CreateValidation(new ValidationOptions() { StopApplyingRulesAfterFailed = flagValue });
+            var validation = CreateValidation(new ValidationOptions() { StopApplyingRulesAfterFailure = flagValue });
             var sourceModel = new SourceModel();
             var expectedText = flagValue ? "Rule not applied - due to previous failing validations" : string.Empty;
 
             //when
             validation.For(sourceModel)
+                .ApplyRule<ARuleThatFailsWithAnErrorMessage>(out IValidationResult failingRuleResult)
+                .ApplyRule<ARuleThatPassesAndReturnsAStringValue>(out IValidationResult passingRuleResult);
+
+            //then
+            Assert.False(failingRuleResult.Passed);
+            Assert.Equal(!flagValue, passingRuleResult.Passed);
+            Assert.Equal(expectedText, passingRuleResult.ErrorMessage);
+        }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void ForOptionsOverrideValidationOptions_AndARuleFails_NoAdditionalRulesShouldBeCalled(bool flagValue)
+        {
+            //given
+            var validation = CreateValidation(new ValidationOptions() { StopApplyingRulesAfterFailure = !flagValue });
+            var sourceModel = new SourceModel();
+            var expectedText = flagValue ? "Rule not applied - due to previous failing validations" : string.Empty;
+
+            //when
+            validation.For(sourceModel, opt => opt.StopApplyingRulesAfterFailure = flagValue)
                 .ApplyRule<ARuleThatFailsWithAnErrorMessage>(out IValidationResult failingRuleResult)
                 .ApplyRule<ARuleThatPassesAndReturnsAStringValue>(out IValidationResult passingRuleResult);
 

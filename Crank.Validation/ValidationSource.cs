@@ -55,7 +55,7 @@ namespace Crank.Validation
         }
 
         private bool StopApplyRulesAfterFailureIfFlagSet() =>
-             _validationOptions.StopApplyingRulesAfterFailed && this.Failures.Any();
+             _validationOptions.StopApplyingRulesAfterFailure && this.Failures.Any();
 
 
         private void AddAFailedValidationResult<TValidationRule>(string errorMessage) =>

@@ -2,6 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
+    <Authors>Darren Davis</Authors>
+    <Company>Darren Davis</Company>
+    <Product>Darren Davis</Product>
+    <PackageProjectUrl>https://github.com/dazberry/Crank.Validation</PackageProjectUrl>
+    <Description>Crank.Validation; in a similar vein to Crank.Mapper, is a set of classes designed to allow validation symantics against a specific source object. As with Crank.Mapper, the actually validations need to be written manually.</Description>
   </PropertyGroup>
 
 </Project>
