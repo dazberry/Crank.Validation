@@ -95,3 +95,18 @@ Validation.For(...) returns a **ValidationSource**. Each call to the various App
 |Result<`TRuleType`>()|If a matching rule exists, returns the validation result or default|
 |Failures | A list of all validation rules that have failed|
 |Reset() | Empty the list of ValidationResults in the ValidationSource|
+
+
+** **
+[1.0.2] Chaining Validation Sources with .For
+
+    var firstInputValue = "Hello World";
+    var secondInputValue = 42;
+    var validation = new Validation(listOfRules); 
+    var passing = validation
+        .For(inputValue)
+            .ApplyRule<StringHasValueButNotMoreThan100Characters>()
+        .For(secondInputValue)
+            .ApplyRule<IntValueIsEqualTo>(42)
+            .Passing;
+

@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Crank.Validation.Tests.Models
 {
@@ -10,5 +6,11 @@ namespace Crank.Validation.Tests.Models
     {
         public string AStringValue { get; set; }
         public int AnIntegerValue { get; set; }
+    }
+
+    public class AnOtherSourceModel
+    {
+        public string AStringValue { get; set; }
+        public Guid AGuidValue { get; set; }
     }
 }

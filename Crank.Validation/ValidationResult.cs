@@ -5,6 +5,9 @@ namespace Crank.Validation
 {
     public class ValidationResult : IValidationResult
     {
+        public string Source { get; protected set; }
+        public string Rule { get; protected set; }
+
         public bool Passed { get; }
         public string ErrorMessage { get; }
 
@@ -44,7 +47,7 @@ namespace Crank.Validation
 
         private IDictionary<Type, IValidationValue> _values = null!;
 
-        public ValidationResult(bool passed, string errorMessage = "")
+        protected ValidationResult(bool passed, string errorMessage = "")
         {
             Passed = passed;
             ErrorMessage = errorMessage;
@@ -66,18 +69,57 @@ namespace Crank.Validation
         public IValidationResult WithValue<TValueType>(TValueType value)
         {
             _values ??= new Dictionary<Type, IValidationValue>();
-            _values.Add(typeof(TValueType), new ValidationValue<TValueType>(value));
+            var validationValue = new ValidationValue<TValueType>(value);
+            if (!_values.TryAdd(typeof(TValueType), validationValue))
+                _values[typeof(TValueType)] = validationValue;
             return this;
         }
 
+        /// <summary>
+        /// Create a Passing ValidationResult
+        /// </summary>
+        /// <returns></returns>
         public static ValidationResult Pass() =>
-            new ValidationResult(true, string.Empty);
+            new ValidationResultWithSourceAndRule(true, string.Empty);
 
+        /// <summary>
+        /// Create a Failing ValidationResult with an optional message
+        /// </summary>
+        /// <param name="errorMessage"></param>
+        /// <returns></returns>
         public static ValidationResult Fail(string errorMessage = "") =>
-            new ValidationResult(false, errorMessage);
+            new ValidationResultWithSourceAndRule(false, errorMessage);
 
+        /// <summary>
+        ///  Set a ValidationResult as passed or failed. Optionally access an error message. The error message is discarded if the passed parameter is true.
+        /// </summary>
+        /// <param name="passed"></param>
+        /// <param name="errorMessage"></param>
+        /// <returns></returns>
         public static ValidationResult Set(bool passed, string errorMessage = "") =>
-            new ValidationResult(passed, passed ? string.Empty : errorMessage);
+            new ValidationResultWithSourceAndRule(passed, passed ? string.Empty : errorMessage);
+    }
+
+    public class ValidationResultWithSourceAndRule : ValidationResult
+    {
+        public ValidationResultWithSourceAndRule(bool passed, string errorMessage = "")
+            : base(passed, errorMessage)
+        {
+        }
+
+        public ValidationResultWithSourceAndRule SetSourceAndRuleDetails<TSource, TValidationRule>()
+        {
+            Source = $"{typeof(TSource)}";
+            Rule = $"{typeof(TValidationRule)}";
+            return this;
+        }
+
+        public static ValidationResultWithSourceAndRule Create<TSource, TValidationRule>(bool passed, string errorMessage = "")
+        {
+            var result = new ValidationResultWithSourceAndRule(passed, errorMessage)
+                .SetSourceAndRuleDetails<TSource, TValidationRule>();
+            return result;
+        }
     }
 
 }

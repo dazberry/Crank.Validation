@@ -15,9 +15,24 @@ namespace Crank.Validation
             _validationOptions = validationOptions ?? new ValidationOptions();
         }
 
+        /// <summary>
+        /// Creates a ValidationSource for the passed source variable. Accepts additional validation options.
+        /// </summary>
+        /// <typeparam name="TSource"></typeparam>
+        /// <param name="source"></param>
+        /// <param name="validationOptions"></param>
+        /// <returns>ValidationSource<TSource></returns>
         public ValidationSource<TSource> For<TSource>(TSource source, ValidationOptions validationOptions = default) =>
             new ValidationSource<TSource>(this, source, validationOptions ?? _validationOptions);
 
+
+        /// <summary>
+        /// Creates a ValidationSource for the passed source variable. Accepts additional validation options.
+        /// </summary>
+        /// <typeparam name="TSource"></typeparam>
+        /// <param name="source"></param>
+        /// <param name="optionsAction"></param>
+        /// <returns>ValidationSource</returns>
         public ValidationSource<TSource> For<TSource>(TSource source, Action<ValidationOptions> optionsAction = null)
         {
             var validationOptions = new ValidationOptions
@@ -28,9 +43,21 @@ namespace Crank.Validation
             return new ValidationSource<TSource>(this, source, validationOptions);
         }
 
+        /// <summary>
+        /// Creates a ValidationSource for the passed source variable.
+        /// </summary>
+        /// <typeparam name="TSource"></typeparam>
+        /// <param name="source"></param>
+        /// <returns>ValidationSource<TSource></returns>
         public ValidationSource<TSource> For<TSource>(TSource source) =>
-                    new ValidationSource<TSource>(this, source, _validationOptions);
+            new ValidationSource<TSource>(this, source, _validationOptions);
 
+        /// <summary>
+        /// Try to get the rule specified by the TValidationRule
+        /// </summary>
+        /// <typeparam name="TValidationRule"></typeparam>
+        /// <param name="validationRule"></param>
+        /// <returns></returns>
         public bool TryGetRule<TValidationRule>(out TValidationRule validationRule)
             where TValidationRule : IValidationRule
 
